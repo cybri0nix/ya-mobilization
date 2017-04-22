@@ -1,0 +1,453 @@
+$page_backgroundColor		: #eee;
+$content_maxWidth			: 770px;
+$defaultFonts				: arial, sans-serif, helvetica;
+
+$link_color					: #004BA8;
+$link_hoverColor			: #990000;
+
+/* TODO: to external file */
+@mixin clearfix() {
+    &:before,
+    &:after {
+        content: "";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
+}
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: 	$radius;
+  border-radius: 			$radius;
+  background-clip: 			padding-box; 
+}
+@mixin transition($transition...) {
+    -moz-transition:    	$transition;
+    -o-transition:      	$transition;
+    -webkit-transition: 	$transition;
+    transition:         	$transition;
+}
+@mixin box-shadow($shadow) {
+ 	-moz-box-shadow: 		$shadow;
+	-webkit-box-shadow: 	$shadow;
+	box-shadow: 			$shadow;
+}
+
+
+
+body{
+	padding: 0 0 100px 0;
+	margin: 0;
+	background: $page_backgroundColor;
+	font-size: 14px;
+	font-family: $defaultFonts;
+	line-height: 1.2em;
+	min-width: 300px;
+}
+
+.link{
+	color: $link_color;
+	text-decoration: none;
+	@include transition(color 0.2s);
+}
+.link:hover {
+	color: $link_hoverColor;
+}
+
+
+
+.header{
+	position: fixed;
+	left:0;
+	top:0;
+	width: 100%;
+	height: 60px;
+	z-index: 900;
+	background: #e61400;
+}
+.header__inner{
+	max-width: $content_maxWidth;
+	margin: 0 auto;
+	height: 60px;
+	line-height:60px;
+	padding:0 20px 0 20px;
+	text-align: left;
+}
+.header__project-title{
+	display:inline-block;
+	margin:0 40px 0 0;
+	white-space: nowrap;
+	color: #fff;
+	font-weight: normal;
+	font-size: 18px;
+}
+
+.header__menu-link:hover{ 
+	color:#fff;
+	opacity: 1;
+}
+
+
+
+.dropdown{
+	position: absolute;
+	width: 220px;
+	margin: 0;
+	padding: 0;
+	margin-top: -1px;
+	list-style-type: none;
+	background: #fff;
+	display: none;
+	border: 1px solid #ccc;
+	@include box-shadow(0px 2px 54px rgba(0, 0, 0, 0.24));
+}
+.dropdown_show{
+	display: block;
+	opacity: 1;
+	z-index:999;
+}
+.dropdown__item{
+	margin: 0;
+	padding: 0 8px 0 8px;
+	height: 40px;
+	cursor: pointer;
+	line-height: 40px;
+}
+.dropdown__item_selected{
+	color: #fff;
+	background:#cc0000;
+}
+.dropdown__item:not(.dropdown__item_selected):hover{
+	background:#E7CBCB;
+}
+
+.dropdown-date{
+	width:100px;
+}
+.dropdown-schools{
+	width:260px;
+}
+
+
+.dropdown__filter-by-date-item{
+	text-transform:capitalize;
+}
+
+.toolbar{
+	position: fixed;
+	width: 100%;
+	left:0;
+	top:60px;
+	z-index:900;
+	background: #fff;
+	border-bottom:1px solid #ccc;
+	min-width: 300px;
+	@include box-shadow(0 3px 5px rgba(0, 0, 0, 0.11));
+}
+.toolbar__inner{
+	padding:10px 20px 10px 20px;
+	max-width: $content_maxWidth;
+	margin: 0 auto;
+	text-align: center;
+}
+.toolbar__btn{
+	display: inline-block;
+	margin-right: 6px;
+	background: #fff;
+	border: 1px solid #ddd;
+	padding: 10px 20px;
+	font-size: 14px;
+	color: #222;
+	text-decoration: none;
+	cursor: pointer;
+	outline: none;
+	text-align: center;
+	@include border-radius(3px);
+	@include transition(all 0.1s);
+}
+.toolbar__btn:hover{
+	border-color: #999;
+	opacity: 1;
+}
+
+.toolbar__btn:active{
+	color: #444;
+	background-color: #ccc;
+}
+
+.toolbar__btn-wrap{
+	position: relative;
+	display:inline-block;
+	vertical-align: top;
+}
+
+
+.toolbar__btn-filter-by-date{
+	font-weight: bold;
+	text-transform: capitalize;
+}
+
+.toolbar__btn-filter-by-status{}
+.toolbar__btn-filter-by-status_active{
+	color: #444;
+	background-color: #ddd;
+	border-color:#bbb;
+}
+
+
+
+
+.schedule-wrap{
+	padding:118px 0 0 0;
+}
+
+.schedule-list{ 
+	max-width: $content_maxWidth;
+	margin: 0 auto;
+	padding:20px; 
+}
+
+.schedule__section-wrap{
+	margin-bottom: 12px; 
+}
+
+.schedule-section__header{
+	margin-bottom: -1px;
+	height:40px;
+	background: #E5E5E5;
+	line-height: 40px;
+	text-align: center;
+	border: 1px solid #ccc;
+}
+.schedule-section__label{
+	margin: 0;
+	padding: 0;
+	color: #444;
+	font-size: 18px;
+	font-weight: normal;
+}
+
+.schedule-section__table{
+	width: 100%;
+	border-collapse: collapse;
+}
+.schedule-table__cell{
+	padding: 14px;
+	background: #fff;
+	border: 1px solid #ccc;
+}
+
+.schedule-table__cell-time{
+	width: 50px;
+	font-size:14px;
+	white-space: nowrap;
+	text-align: center;
+	font-weight: bold;
+}
+
+.schedule-table__cell-time_past{
+	color: #bbb;
+}
+
+.schedule-table__cell-lesson{
+	width: 100%;
+	padding: 14px 14px 0 0;
+	color: #222;
+}
+
+.schedule-table__cell-lesson_past{
+	
+}
+
+.schedule-table__text_red{
+	color:#990000;
+}
+
+.schedule-table__label{}
+.schedule-table__label-lesson-title{
+	display: inline-block;
+	padding-left: 8px;
+	font-weight: bold;
+	font-size: 15px;
+	margin: 0;
+}
+
+
+.schedule-table__label-room-title{
+	display: inline-block;
+	margin-left: 8px;
+	color: #777;
+	font-size: 12px;
+}
+
+
+.cell-lesson__bottom-bar{
+	display: block;
+	margin-top:10px;
+	width: 100%;
+}
+
+
+.schedule-table__school-labels{
+	display:inline-block;
+}
+.schedule-table__school-label{
+	display: inline-block;
+	margin: 0;
+	padding: 2px 6px 1px 6px;
+	white-space: nowrap;
+	font-weight: normal;
+	font-size: 11px;
+	color: #666;
+	border: 1px solid #ccc;
+	border-left: none;
+	border-bottom: none;
+}
+
+
+.schedule-table__label-lecturer-wrap{
+	display: block;
+	position: relative;
+	float: right;
+}
+.schedule-table__label-lecturer{
+	display: inline-block;
+	float: right;
+	font-size: 14px;
+	font-weight: normal;
+	color: #666;
+	cursor: pointer;
+	text-decoration: none;
+	@include transition(all 0.2s);
+}
+.schedule-table__label-lecturer:first-letter{
+	color:#dd0000;
+}
+.schedule-table__label-lecturer:hover{
+	color:#dd0000;
+}
+
+
+
+.balloon-lecturer{
+	position: absolute;
+	width: 200px;
+	right: 0;
+	top: 16px;
+	z-index: 600;
+	background:#fff;
+	padding:20px;
+	display:none;
+	border: 1px solid #ccc;
+	text-align: center;
+	@include box-shadow(0px 2px 54px rgba(0, 0, 0, 0.24));
+	@include border-radius(6px);
+}
+.balloon-lecturer_show{
+	opacity: 1;
+	display: block;
+}
+.balloon-lecturer__ava{
+	display:block;
+	margin:0 auto;
+	text-align: center;
+	width: 48px;
+	height: 48px;
+	background:no-repeat;
+	background-size: 190%;
+	background-position: center center;
+	vertical-align: middle;
+	@include border-radius(48px);
+}
+.balloon-lecturer__bio{
+	margin-top: 6px;
+	margin-left: 8px;
+	text-align: center;
+}
+.balloon-lecturer__btn-ok{
+	position:absolute;
+	right:10px;
+	top:10px;
+	padding:6px;
+	cursor:pointer;
+}
+.balloon-lecturer__btn-ok:hover{
+	color:#cc0000;
+}
+
+
+.schedule-table__text_light{
+	color: #bbb; 
+}
+
+
+@media(min-width: 0px) and (max-width: 560px) {
+
+	.header__project-title{
+		font-size:16px;
+		text-transform: uppercase;
+	}
+
+
+	.toolbar__inner{
+		padding: 0;
+	}
+	.toolbar__btn-wrap{
+		position: static;
+		float:left;
+		width:50%;
+	}
+	.toolbar__btn{
+		padding: 0;
+		display:block;
+		margin:0;
+		height:40px;
+		line-height: 40px;
+		border:none;
+		@include border-radius(0);
+	}
+	.toolbar__btn-filter-by-date {
+		border-right:1px solid #ccc;
+	}
+	
+	.schedule-wrap{
+		padding-top:90px;
+	}
+	.schedule-list{
+		padding:20px 8px;
+	}
+	.schedule__section-wrap{
+		margin-bottom:8px;
+	}
+	.schedule-section__header{
+		background: #E5E5E5;
+	}
+	.schedule-section__label{
+		font-weight: bold;
+		font-size: 14px;
+	}
+
+	.schedule-table__cell-time{
+		font-size:13px;
+	}
+
+	.schedule-table__label-lesson-title{
+		font-size: 13px;
+	}
+
+	.dropdown{
+		position:absolute;
+		z-index:960;
+		width: 90%;
+		padding:5%;
+		top: 40px;
+		left: 0;
+		border:none;
+	}
+	.dropdown__item{
+		height:50px;
+		line-height:50px;
+	}
+}
+

@@ -1,12 +1,142 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Тестовое задание / Школа разработки интерфейсов / Проект Мобилизация Яндекс</title>
-  <!--link rel="stylesheet" href="css/styles.css?v=1.0"-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Тестовое задание / Школа разработка интерфейсов / Проект Мобилизация / Яндекс</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 
 <body>
-	<h1>Holla</h1>
-  <!--script src="js/scripts.js"></script-->
+	
+	<div class="header">
+		<div class="header__inner">
+			<h1 class="header__project-title">Проект &laquo;Мобилизация&raquo;</h1>
+		</div>
+	</div>
+	
+	<div class="schedule-wrap" id="scheduleWidget">
+		<div class="toolbar">
+			<div class="toolbar__inner">
+				<div class="toolbar__btn-wrap">
+					<!-- Btn filter by date -->
+					<a class="toolbar__btn toolbar__btn-filter-by-date" 
+						v-on:click="toggleDropdown('date')"
+						>{{'today' === modelFilterByDate ? 'Сегодня' : moment(modelFilterByDate, 'MM').format('MMMM')}}</a>
+					<ul class="dropdown dropdown-date" v-bind:class="{'dropdown_show':isDropdownVisible('date')}">
+						<li class="dropdown__item" 
+							v-bind:class="{'dropdown__item_selected':isSelectedFilterByDate('today')}"
+							v-on:click.prevent="return setFilterByDate('today', $event)"
+							>Сегодня</li>
+						<template v-for="(monthSchedule, monthNum) in schedule">
+						<li 
+							class="dropdown__item dropdown__filter-by-date-item" 
+							v-bind:class="{'dropdown__item_selected':isSelectedFilterByDate(~~monthNum+1)}"
+							v-on:click.prevent="return setFilterByDate(~~monthNum+1, $event)"
+							>{{ moment(~~monthNum+1, 'MM').format('MMMM') }}</li>
+						</template>
+					</ul>
+				</div>
+				<div class="toolbar__btn-wrap">
+					<!-- Btn filter by school -->
+					<a class="toolbar__btn toolbar__btn-filter-by-school" v-on:click.prevent="toggleDropdown('schools', $event)">{{ schoolResolve(modelFilterBySchoolId).shortTitle||'Любая школа' }}</a>
+					<ul class="dropdown dropdown-schools" v-bind:class="{'dropdown_show':isDropdownVisible('schools')}">
+						<li class="dropdown__item" 
+							v-on:click="setFilterBySchoolId('all')"
+							v-bind:class="{'dropdown__item_selected':isSelectedFilterBySchoolId('all')}">Любая</li>
+						<template v-for="school in schools">
+						<li class="dropdown__item" 
+							v-on:click="setFilterBySchoolId(school._id)"
+							v-bind:class="{'dropdown__item_selected':isSelectedFilterBySchoolId(school._id)}"
+							>{{school.title}}</li>
+						</template>
+					</ul>
+				</div>
+				<!-- todo: past/future lessons -->
+				<div class="toolbar__btn-wrap" style="display:none">
+					<a class="toolbar__btn toolbar__btn-filter-by-status" 
+						v-bind:class="{'toolbar__btn-filter-by-status_active':modelFilterByStatusHidePast === true}"
+						v-model="modelFilterByStatusHidePast" 
+						v-on:click.prevent="toggleFilterByStatus($event)" 
+						v-html="false === modelFilterByStatusHidePast ? 'Скрыть прошедшее':'Показать прошедшее'">	
+					</a>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="schedule-list">
+			<!--Пройдемся по месяцам, согласно режиму фильтра по дате. Сегодня - тек. месяц, Месяц - только выбранный месяц-->
+			<template v-for="(stub, monthNum) in getFilteredMonths()">
+				<!--Пройдемся по дням месяца. Если Сегодня, то отобразить только лекции на Сегодня, иначе все дни месяца-->
+				<template v-for="(daySchedule, dayNum) in getFilteredDates(monthNum)"><!--exclude:(daySchedule, dayNum) in schedule[monthNum]-->
+				<div class="schedule__section-wrap">
+					<div class="schedule-section__header">
+						<!--TODO: номер месяа в род. падеже-->
+						<h2 class="schedule-section__label">{{ dayNum }} {{ moment(~~monthNum+1, 'MM').format('MMM') }}</h2>
+					</div>
+					<table cellpadding="0" cellspacing="0" border="0" class="schedule-section__table">
+						<template v-for="(item, key) in schedule[monthNum][dayNum]" v-if="filterBySchoolId(item) && filterByStatus(item) && filterByDate(item)">
+						<tr v-bind:data-id="item._id">
+							<!--col: time, grayed if lesson past-->
+							<td 
+								class="schedule-table__cell schedule-table__cell-time"
+								v-bind:class="{'schedule-table__text_light':isTimePast(item.plannedDateTime), 'schedule-table__text_red':isToday(item.plannedDateTime) }"
+								>{{ extractTime(item.plannedDateTime) }}</td>
+							
+							<!--col: lesson an meta-->
+							<td 
+								class="schedule-table__cell schedule-table__cell-lesson"
+								v-bind:class="{'schedule-table__cell-lesson_past':isTimePast(item.plannedDateTime)}"
+								>
+								<!--Past lesson title if lesson is past-->
+								<a 
+									v-bind:href="['lesson',item._id].join('/')" 
+									class="link schedule-table__link schedule-table__label-lesson-title" 
+									v-bind:class="{'schedule-table__text_red':isToday(item.plannedDateTime)}" 
+									v-if="isTimePast(item.plannedDateTime)">{{ lessonResolve(item.lessonId).title }}</a>
+								<!--Future lesson title if lesson planned-->
+								<h4 class="schedule-table__label-lesson-title" v-if="!isTimePast(item.plannedDateTime)">{{ lessonResolve(item.lessonId).title }}</h4><br>
+								<!--Room title, hidden if lesson past-->
+								<div class="schedule-table__label-room-title" v-if="!isTimePast(item.plannedDateTime)">{{ roomResolve(item.roomId).title }}</div>
+								<!--lecturer-->
+								<div class="schedule-table__label-lecturer-wrap">
+									<a class="schedule-table__label-lecturer" v-on:click="showBalloon('lecturer_'+item.lecturerId + dayNum + monthNum)">{{ lecturerResolve(item.lecturerId).name }}</a>
+									<div class="balloon-lecturer" v-bind:class="{'balloon-lecturer_show':isBalloonVisible('lecturer_'+item.lecturerId + dayNum + monthNum)}">
+										<div class="balloon-lecturer__ava" v-bind:style="'background-image:url('+lecturerResolve(item.lecturerId).ava+')'">&nbsp;</div>
+										<div class="balloon-lecturer__bio">{{ lecturerResolve(item.lecturerId).bio }} </div>
+										<span class="balloon-lecturer__btn-ok" v-on:click="hideAllBalloons()">Ок</span>
+									</div>
+								</div>
+								<!--Schools-->
+								<span class="cell-lesson__bottom-bar">
+									<template v-for="schoolId in item.schools">
+									<span class="schedule-table__school-labels">
+										<span class="schedule-table__school-label" v-bind:title="schoolResolve(schoolId).title">{{ schoolResolve(schoolId).shortTitle }}</span>
+									</span>
+									</template>
+								</span>
+							</td>
+						</tr>
+						</template>
+					</table>
+				</div><!-- /.schedule__section-wrap -->
+				</template>
+			</template>
+		</div><!-- /.schedule-list -->
+	</div>
+
+	<script src="assets/js/libs/vue.min.js"></script>
+
+	<!-- Для удобства, можно использовать moment в шаблонах Vuejs, но у написанных библиотек зависимостей никаких нет -->
+	<script src="assets/js/libs/moment-with-locales.min.js"></script>
+	
+	<!-- Библиотеки для работы с расписанием (работают без сторонних зависимостей) -->
+	<script src="assets/js/libs/yaschool.js"></script>
+	<script src="assets/js/libs/scheduler.js"></script>
+
+	<!-- Пример работы с библиотеками и рендеринг расписания на Vuejs -->
+ 	<script src="assets/js/app.vue.js"></script>
+
 </body>
 </html>
