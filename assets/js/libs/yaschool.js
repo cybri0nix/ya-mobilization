@@ -176,14 +176,14 @@
 			return itemData._id;
 		},
 		
-
+		// TODO:
 		removeItem: function(id, itemType) {
 			if ( !this.models[itemType]) {
 				return false;
 			}
 		}, // remove
 
-
+		// TODO:
 		updateItem: function(id, itemType, itemData) {
 			if ( !this.models[itemType]) {
 				return false;
