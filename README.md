@@ -11,4 +11,4 @@ _Написано в качестве тестового задания для �
 * [Прототип](https://github.com/cybri0nix/ya-mobilization/blob/master/proto/page-schedule-view.png)
 * [Исходный код макета на AxureRP](https://github.com/cybri0nix/ya-mobilization/blob/master/proto/main.rp)
 
-* [Библиотека для работы с рсписанием](https://github.com/cybri0nix/scheduler)
+* [Библиотека для работы с расписанием](https://github.com/cybri0nix/scheduler)
