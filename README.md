@@ -3,7 +3,9 @@
 [Узнать больше о проекте](https://academy.yandex.ru/events/frontend/shri_msk-2017)
 
 
-### [Демонстрация приложения](https://cybri0nix.github.io/ya-mobilization/ ) 
+* ### [Демонстрация приложения](https://cybri0nix.github.io/ya-mobilization/ ) 
+
+
 
 * [Прототип](https://github.com/cybri0nix/ya-mobilization/blob/master/proto/page-schedule-view.png)
 * [Исходный код макета на AxureRP](https://github.com/cybri0nix/ya-mobilization/blob/master/proto/main.rp)
