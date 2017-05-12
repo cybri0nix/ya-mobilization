@@ -900,7 +900,7 @@
 
                 // Вызываем событие afterScheduleAdded
                 if (isFunction(this.events.afterScheduleAdded)) {
-                    this.events.afterScheduleAdded({
+                    this.events.afterScheduleUpdated({
                         success: true,
                         data: newSchedule
                     });

@@ -202,7 +202,7 @@ var testData = {
 			/* Filters/formatters */
 			extractDayNum: function(seconds) {
 				var date = new Date( seconds * 1000 )
-				return date.getUTCDate();
+				return date.getUTCDate().toString();
 			},
 			extractTime: function(seconds) {
 				var date = new Date( seconds * 1000 )
